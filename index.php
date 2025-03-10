@@ -22,29 +22,36 @@
                     <th>Age</th>
                     <th>Major</th>
                     <th>Profile</th>
-                    <th>Create At</th>
-                    <th>Update At</th>
                     <th>Action</th>
                 </tr>
             </thead>
-            <tbody>
-                <tr>
-                    <td>1</td>
-                    <td>Sok</td>
-                    <td>Male</td>
-                    <td>sok@gmail.com</td>
-                    <td>20</td>
-                    <td>CS</td>
-                    <td>
-                        <img width="80px" src="https://i.pinimg.com/736x/b9/36/06/b93606f0fd2698f330f93f141a4c9400.jpg" alt="">
-                    </td>
-                    <td>4/3/2025</td>
-                    <td>4/3/2025</td>
-                    <td>
-                        <button type="submit" class="btn btn-warning">Edit</button>
-                        <button type="submit" class="btn btn-danger">Delete</button>
-                    </td>
-                </tr>
+            <tbody id="tbody">
+                <?php 
+                    include 'connection.php';
+                    global $con;
+                    $sql="SELECT * FROM `tbl_ajax`";
+                    $result=$con->query($sql);
+                    while($row=$result->fetch_assoc()){
+                        echo '
+                            <tr>
+                            <td>'.$row['student_id'].'</td>
+                            <td>'.$row['student_name'].'</td>
+                            <td>'.$row['sex'].'</td>
+                            <td>'.$row['email'].'</td>
+                            <td>'.$row['age'].'</td>
+                            <td>'.$row['major'].'</td>
+                            <td>
+                                <img width="80px" src="Images/'.$row['profile'].'" alt="">
+                            </td>
+                    
+                            <td>
+                                <button type="submit" class="btn btn-warning">Edit</button>
+                                <button type="submit" class="btn btn-danger">Delete</button>
+                            </td>
+                        </tr>
+                        ';
+                    }
+                ?>
             </tbody>
         </table>
     </div>
@@ -128,12 +135,14 @@
             });
         })
         $('#save').click(function(){
+            $('#exampleModal').modal('hide');
             const name=$('#name').val()
             const sex=$('#sex').val();
             const email=$('#email').val();
             const age=$('#age').val();
             const major=$("#major").val();
             const profile=$('#img').val();
+            
             $.ajax({
                 url:'insert.php',
                 method:"POST",
@@ -147,7 +156,24 @@
                 },
                 cache:false,
                 success:function(res){
-                    console.log(res);   
+                
+                    $('#tbody').append(`
+                        <tr>
+                            <td>${res}</td>
+                            <td>${name}</td>
+                            <td>${sex}</td>
+                            <td>${email}</td>
+                            <td>${age}</td>
+                            <td>${major}</td>
+                            <td>
+                                <img width="80px" src="./Images/${profile}" alt="">
+                            </td>
+                            <td>
+                                <button type="submit" class="btn btn-warning">Edit</button>
+                                <button type="submit" class="btn btn-danger">Delete</button>
+                            </td>
+                        </tr>
+                            `);  
                 }
             });   
         })
