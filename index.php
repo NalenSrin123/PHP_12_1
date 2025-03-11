@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CRUD Student</title>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script> 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
@@ -14,7 +15,7 @@
         <button class="btn btn-primary float-end" data-bs-toggle="modal" data-bs-target="#exampleModal">Add Student</button>
         <table class="table table-hover align-middle text-center" style="table-layout: fixed;">
             <thead>
-                <tr>
+                  <tr>
                     <th>ID</th>
                     <th>Name</th>
                     <th>Sex</th>
@@ -46,7 +47,7 @@
                     
                             <td>
                                 <button type="submit" class="btn btn-warning">Edit</button>
-                                <button type="submit" class="btn btn-danger">Delete</button>
+                                <button data-bs-toggle="modal" data-bs-target="#exampleModal1" type="button" class="btn btn-danger" data-id="'.$row['student_id'].'" id="delete">Delete</button>
                             </td>
                         </tr>
                         ';
@@ -55,6 +56,7 @@
             </tbody>
         </table>
     </div>
+    <!-- modal add -->
     <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
   <div class="modal-dialog">
     <div class="modal-content">
@@ -110,6 +112,28 @@
     </div>
   </div>
 </div>
+<!-- modal delete -->
+<div class="modal fade" id="exampleModal1" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Are you sure to delete this student?</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form action="" method="post" enctype="multipart/form-data">
+            <div class="form-group">
+                <input type="hidden" name="delete_id" id="delete_id" class="form-control">
+            </div>
+            <div class="form-group mt-3 d-flex justify-content-end">
+            <button type="button" class="btn btn-primary me-2" name="btnDelete" id="btnDelete">Yes, delete.</button>
+            <button class="btn btn-danger">Cancel</button>
+            </div>
+        </form>
+      </div>  
+    </div>
+  </div>
+</div>
 </body>
 </html>
 <script>
@@ -141,8 +165,7 @@
             const email=$('#email').val();
             const age=$('#age').val();
             const major=$("#major").val();
-            const profile=$('#img').val();
-            
+            const profile=$('#img').val();           
             $.ajax({
                 url:'insert.php',
                 method:"POST",
@@ -156,7 +179,6 @@
                 },
                 cache:false,
                 success:function(res){
-                
                     $('#tbody').append(`
                         <tr>
                             <td>${res}</td>
@@ -170,12 +192,37 @@
                             </td>
                             <td>
                                 <button type="submit" class="btn btn-warning">Edit</button>
-                                <button type="submit" class="btn btn-danger">Delete</button>
+                                <button type="button" class="btn btn-danger">Delete</button>
                             </td>
                         </tr>
                             `);  
                 }
             });   
         })
+        $(document).on('click','#delete',function(){
+            const id=$(this).attr('data-id');
+            const row=$(this).parents('tr');         
+           $('#delete_id').val(id);
+           $('#btnDelete').click(function(){
+            $('#exampleModal1').modal('hide');
+            row.remove();
+            $.ajax({
+                url:'delete.php',
+                method:'post',
+                data:{
+                    stu_id:id
+                },
+                cache:false,
+                success:function(res){
+                    if(res=='Success'){
+                        Swal.fire({
+                            title: "Deleted!",
+                            icon: "success"
+                        });
+                    }                 
+                }
+            })
+            })
+        })   
     })
 </script>
