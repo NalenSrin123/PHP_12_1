@@ -10,9 +10,9 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
 </head>
 <body>
-    <div class="container-fluid">
+    <div class="container-fluid ">
         <h2>Student List</h2>
-        <button class="btn btn-primary float-end" data-bs-toggle="modal" data-bs-target="#exampleModal">Add Student</button>
+        <button class="btn btn-primary float-end" data-bs-toggle="modal" data-bs-target="#exampleModal" id="btnAdd">Add Student</button>
         <table class="table table-hover align-middle text-center" style="table-layout: fixed;">
             <thead>
                   <tr>
@@ -46,7 +46,7 @@
                             </td>
                     
                             <td>
-                                <button type="submit" class="btn btn-warning">Edit</button>
+                                <button type="submit" class="btn btn-warning"  data-bs-toggle="modal" data-bs-target="#exampleModal" id="btnEdit" >Edit</button>
                                 <button data-bs-toggle="modal" data-bs-target="#exampleModal1" type="button" class="btn btn-danger" data-id="'.$row['student_id'].'" id="delete">Delete</button>
                             </td>
                         </tr>
@@ -61,12 +61,13 @@
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+       
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
         <form action="" method="post" enctype="multipart/form-data">
-            <h3 class="text-center">Add Student</h3>
+            <h3 class="text-center" id="title"></h3>
+            <input type="hidden" name="hide_id" id="hide_id">
             <div class="form-group">
                 <label for="" class="form-label">Name</label>
                 <input type="text" name="name" id="name" class="form-control">
@@ -104,6 +105,7 @@
             </div>
             <div class="form-group mt-3 d-flex justify-content-end">
             <button type="button" class="btn btn-primary me-2" name="save" id="save">Save</button>
+            <button type="button" class="btn btn-success me-2" name="edit" id="edit">Edit</button>
             <button class="btn btn-danger">Cancel</button>
             </div>
         </form>
@@ -223,6 +225,69 @@
                 }
             })
             })
-        })   
+        })  
+        $('#btnAdd').click(function(){
+            $('#edit').hide();
+            $('#save').show();
+            $('#title').text('Add Student')
+        }) 
+        $(document).on('click','#btnEdit',function(){
+            $('#save').hide();
+            $('#edit').show();
+            $('#title').text('Edit Student');
+            const tr=$(this).parents('tr');
+            const tb_id=tr.find('td').eq(0).text();
+            const tb_name=tr.find('td').eq(1).text();
+            const tb_sex=tr.find('td').eq(2).text();
+            const tb_email=tr.find('td').eq(3).text();
+            const tb_age=tr.find('td').eq(4).text();
+            const tb_major=tr.find('td').eq(5).text();
+            const tb_profile=tr.find('td').eq(6).find('img').attr('src').split('/').pop();
+            
+            $('#hide_id').val(tb_id)
+            $('#name').val(tb_name)
+            $('#sex').val(tb_sex);            
+            $('#email').val(tb_email);
+            $('#age').val(tb_age);          
+            $("#major").val(tb_major);
+            $('#img').val(tb_profile);  
+            $('#default_profile').attr('src','Images/'+tb_profile+'');
+            $(document).on('click','#edit',function(){
+                $('#exampleModal').modal('hide');
+                const id=$('#hide_id').val();
+                const name=$('#name').val();
+                const sex=$('#sex').val();
+                const email=$('#email').val()
+                const age=$('#age').val();
+                const major=$("#major").val()
+                const profile=$('#img').val(); 
+                $.ajax({
+                    url:'edit.php',
+                    method:'POST',
+                    data:{
+                        stu_id:id,
+                        stu_name:name,
+                        stu_sex:sex,
+                        stu_email:email,
+                        stu_age:age,
+                        stu_major:major,
+                        stu_profile:profile 
+                    },
+                    cache:false,
+                    success:function(res){
+                        
+                        tr.find('td').eq(1).text(name);
+                        tr.find('td').eq(2).text(sex);
+                        tr.find('td').eq(3).text(email);
+                        tr.find('td').eq(4).text(age);
+                        tr.find('td').eq(5).text(major);
+                        tr.find('td').eq(6).find('img').attr('src','Images/'+profile+'');
+                        
+                    }
+                })
+                
+            })
+            
+        }) 
     })
 </script>
