@@ -19,7 +19,7 @@ Route::controller(StudentController::class)->group(function(){
     Route::post('/deleteStudent','deleteStudent')->name('deleteStudent');
     Route::get('/editStudent/{student}','editStudent')->name('editStudent');
     Route::post('/editStudentSubmit/{student}','editStudentSubmit')->name('editStudentSubmit');
-
 });
+
 
 

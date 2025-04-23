@@ -14,7 +14,7 @@
         margin: auto;
         margin-top: 50px;
         background-color: #fff;
-        border-radius: 10px;
+        border-radius: 10px; 
         box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
         padding: 30px
 
