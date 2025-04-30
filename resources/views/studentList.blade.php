@@ -15,6 +15,7 @@
     <div class="container">
         <h3>Student`s Lists</h3>
         <button class="btn btn-primary float-end" data-bs-toggle="modal" data-bs-target="#exampleModal">Add Student</button>
+        <a href="{{ route('logout') }}" class="btn btn-danger float-end me-2">Logout</a>
         <table class="table text-center align-middle" style="table-layout: fixed">
             <thead>
                 <tr>
