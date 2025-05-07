@@ -24,4 +24,6 @@ Route::controller(ProductController::class)->group(function(){
     Route::get('/getProduct','getOneProducts');
     Route::get('/getLimitProduct/{limit}', 'getLimitProduct');
     Route::post('/addProduct','addProduct');
+    Route::delete('/deleteProduct/{product}','deleteProduct');
+    Route::post('/updateProduct/{product}','updateProduct');
 });
